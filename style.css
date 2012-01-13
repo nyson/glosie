@@ -1,0 +1,39 @@
+h2#question {
+    font-size: 100px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+body {
+    text-align: center;
+}
+#main {
+    position: absolute;
+    width: 600px;
+    padding-left: 260px;
+}
+
+#log {
+    margin: 0px;
+    font-size: 12px;
+    width: 250px;
+    padding-left: 2px;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    text-align: left;
+}
+
+#log ul {
+    list-style-type: none;
+    font-size: 16px;
+}
+.correct {color: #0a0;}
+.wrong {color: #f00;}
+
+#statistics var {
+    font-style: normal;
+}
+
+
+

@@ -1,0 +1,125 @@
+function loadList() {
+    $.ajax({
+	dataType:"html",
+	error: function(xhr, status, thrown) {
+	    console.debug(xhr,
+			  "Status: " + status
+			  + "\nThrown Error: " + thrown)
+	},
+	url: "./list.lst",
+	isLocal: true,
+	success: function(data) {
+	    var list = [];
+	    data = data.split("\n");
+	    for(d in data) {
+		var t = data[d].split(":");
+		list.push({n: t[0],f: t[1]});
+	    }
+
+	    console.debug("data length: ", list.length);
+	    $(document).data("dict", list);
+	    getForeignToNativeQuestion();
+	}
+    });
+}
+
+var counter = {
+    "totalCount": 0,
+    "correctCount": 0,
+    "put": function(){
+	var stat = $("p#statistics");
+	var perc = this.correctCount / this.totalCount;
+	perc = Math.round(perc * 10000) / 100;
+
+	if(this.totalCount < 5)
+	    var comment = "You should probably answer "
+	    + "some more questions.";
+	else if(perc <= 33)
+	    var comment = "You can do better! Gambattene!";
+	else if(perc <= 66)
+	    var comment = "You're doing good! Fight harder!";
+	else if(perc <= 99)
+	    var comment = "You're doing awesome! Stay cool!";
+	else if(perc <= 100)
+	    var comment = "You're PERFECT! You're my hero!";
+
+	stat.find(".corrects").html(this.correctCount);
+	stat.find(".totals").html(this.totalCount);
+	stat.find(".percCorrect").html(perc);
+	stat.find(".comment").html(comment);
+
+    }
+}
+function getForeignToNativeQuestion() {
+    var list = $(document).data("dict");
+    var index = Math.floor(Math.random()*list.length);
+    
+    $("#hint").html("");
+    $("#answer").val("");
+    $("#answer").data("guessedWrong", false);
+    $("#question").html(list[index].f);
+    $("#question").data({
+	"question": list[index].f,
+	"answer": list[index].n,
+	"index": index
+    });
+    
+}
+
+function logGuess(){
+    if($("#log ul").length == 0)
+	$("#log").append("<ul></ul>");
+    var log = $("#log ul");
+    var ans = $("#answer");
+    var q = $("#question");
+
+    log.append("<li class='"
+	       + (ans.data("guessedWrong") ? "wrong" : "correct")
+	       + "'><strong>" + q.data("question") +"</strong> is "
+	       + "<strong>" + q.data("answer") +  "</strong>"
+	       + "</li>");
+}
+
+
+function checkAnswer() {
+    var q = $("#question");
+    var ans = $("#answer");
+    var list = $(document).data("dict");
+    
+    if(ans.val().trim() == q.data("answer")) {
+	counter.totalCount++;
+	if(!ans.data("guessedWrong"))
+	    counter.correctCount++;
+	counter.put();
+	return true;
+    }
+    else {
+	$("#hint").html(q.data("answer"));
+	ans.val("");
+	ans.focus();
+	ans.data("guessedWrong", true);
+	return false;
+    }
+
+}
+
+
+$(document).ready(function() {
+    loadList();
+    $("#answer").focus();
+    
+    $("#answer").keypress(function (e, ui) {
+	if(e.keyCode != 13)
+	    return;
+	
+	if(checkAnswer()){
+	    $("#question").removeClass("wrong");
+	    logGuess();
+	    getForeignToNativeQuestion();
+	}
+	else {
+	    $("#question").addClass("wrong");
+	    $("#question").attr("disabled","disabled");
+	}
+    });
+});

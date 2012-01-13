@@ -4,18 +4,34 @@ h2#question {
     margin-top: 5px;
 }
 body {
+    margin: 0px;
+    padding: 0px;
     text-align: center;
 }
+
+#main, #settings, #log {
+    border: 1px dashed #000;
+}
+
 #main {
-    position: absolute;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
     width: 600px;
-    padding-left: 260px;
+    margin-top: 0px;
+
+}
+#settings {
+    position: fixed; 
+    width: 200px;
+    right: 0px;
+    top: 0px;
 }
 
 #log {
     margin: 0px;
-    font-size: 12px;
-    width: 250px;
+    font-size: 11px;
+    width: 200px;
     padding-left: 2px;
     position: fixed;
     left: 0px;

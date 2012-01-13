@@ -6,7 +6,6 @@ h2#question {
 body {
     margin: 0px;
     padding: 0px;
-    text-align: center;
 }
 
 #main, #settings, #log {
@@ -19,13 +18,19 @@ body {
     margin-right: auto;
     width: 600px;
     margin-top: 0px;
-
+    text-align: center;
 }
 #settings {
     position: fixed; 
     width: 200px;
     right: 0px;
     top: 0px;
+}
+
+#dictionaries, #dictionaries ul {
+    list-style-type: none;
+    margin-left: 0px;
+    padding-left: 10px;
 }
 
 #log {

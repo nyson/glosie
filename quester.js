@@ -1,11 +1,70 @@
+var standardError =  function(xhr, status, thrown) {
+    console.debug(xhr,
+		  "Status: " + status
+		  + "\nThrown Error: " + thrown)
+}
+
 function loadList() {
+    this.showLoadableLists = function(data, name){
+	var dict = $("#dictionaries");
+	for(d in data) {
+	    var file = $("<ul>");
+	    dict.append("<li><input id='"+d+"' type='checkbox' name='dict' "
+			+ "value='" +d+ "' />"
+			+ "<label for='"+d+"'>"+d+"</label></li>");
+	    dict.append(file);
+
+	    for(f in data[d]) { 
+		var i = 0;
+		for(w in data[d][f]) {
+		    i++;
+		}
+		file.append("<li><input class='loadableList' type='checkbox' id='"+f
+			    +"' name='dict' " + "value='"+f+"'' />"
+			    + "<label for='"+f+"'>" + f + " ("+i+")" + "</label></li>");
+	    }
+	}
+
+	$("input").click(function(e, ui) {
+	    var next = $(this).parent().next();
+	    var checked = $(this).attr("checked") != undefined 
+		? $(this).attr("checked") 
+		: false;
+	    if(next.length > 0 && next[0].nodeName.toLowerCase() == "ul") {
+		next.find("li input:checkbox").each(function(){
+		    $(this).attr("checked", checked);
+		});
+	    }
+
+	    
+	});
+    };
+
+    this.loadCheckedLists = function (){
+	var lists = $("input.loadableList:checked").each(function (){
+	    console.debug($(this).val());
+	});
+    }
+
+
+
+    var that = this;
+    $.ajax({
+	dataType: "json",
+	error: standardError,
+	url: "api.php",
+	data: {
+	    "do": "getDicts"
+	},
+	success: function(data) {
+	    console.log(data);
+	    that.showLoadableLists(data);
+	}	
+    });
+    
     $.ajax({
 	dataType:"html",
-	error: function(xhr, status, thrown) {
-	    console.debug(xhr,
-			  "Status: " + status
-			  + "\nThrown Error: " + thrown)
-	},
+	error: standardError,
 	url: "./list.lst",
 	isLocal: true,
 	success: function(data) {
@@ -105,9 +164,11 @@ function checkAnswer() {
 
 
 $(document).ready(function() {
-    loadList();
-    $("#answer").focus();
+    var ll = new loadList();
     
+    $("#loadCheckedLists").click(ll.loadCheckedLists);
+    $("#answer").focus();
+   
     $("#answer").keypress(function (e, ui) {
 	if(e.keyCode != 13)
 	    return;

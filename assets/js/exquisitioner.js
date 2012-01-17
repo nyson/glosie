@@ -8,9 +8,20 @@ function Exquisitioner(list){
     this.list = {};
     this.ansField;
 
-    this.loadList = function (list){
-	this.list = list;
-	this.startup();
+    // Attempt to get a list of questions from the list loader.
+    // If the attempt fails, the active list remains unchanged.
+    this.loadList = function (listName) {
+        var ll = ListLoader.getSingleton();
+        var quiz = this;
+        ll.load(listName, false, function() {
+            var list = this.list = ll.get(listName);
+            if(list) {
+	        quiz.list = list;
+	        quiz.startup();
+            } else {
+                console.log('Exquisitioner failed to load dict ' + listName);
+            }
+        });
     };
     this.startup = function (){
 	this.getQuestion();

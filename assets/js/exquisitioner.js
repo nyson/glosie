@@ -37,12 +37,12 @@ function Exquisitioner(list){
     // If the attempt fails, the active list remains unchanged.
     this.loadList = function (listName) {
         var ll = ListLoader.getSingleton();
-        var quiz = this;
+        var that = this;
         ll.load(listName, false, function() {
             var list = this.list = ll.get(listName);
             if(list) {
-	        quiz.list = list;
-	        quiz.startup();
+	        that.list = list;
+	        that.startup();
             } else {
                 console.log('Exquisitioner failed to load dict ' + listName);
             }
@@ -62,7 +62,6 @@ function Exquisitioner(list){
     };
 
     this.setAnsField = function(field) {
-	var that = this;
 	this.ansField = field;
 	this.ansField.keypress(function (e, ui) {
 	    if(e.keyCode != 13)

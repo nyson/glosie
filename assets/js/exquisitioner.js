@@ -7,10 +7,56 @@ function Exquisitioner(list){
     this.currentQIndex = undefined;
     this.list = {};
     this.ansField;
+    this.dictList = $("#dictList");
 
-    this.loadList = function (list){
-	this.list = list;
-	this.startup();
+    var that = this;
+
+    // On dictionary list change, change the current dictionary.
+    this.dictList.change(function() {
+        that.loadList(that.dictList[0].value);
+    });
+
+    // Initialize the list, setting
+    this.init = function(defaultList) {
+        // Refresh the dict list
+        $.ajax({
+            url: 'api.php?do=getDicts',
+            error: function(a, b) {
+                console.log(a, b);
+            },
+            success: function(res) {
+                var lists = $.parseJSON(res);
+                that.dictList.empty();
+                for(var i in lists) {
+                    var v = lists[i];
+                    var elem = $('<option value="'+v+'">'+v+'</option>');
+                    that.dictList.append(elem);
+                }
+
+                // Load the default dictionary
+                var ll = ListLoader.getSingleton();
+                ll.load(defaultList, false, function() {
+                    that.loadList(defaultList);
+                });
+            }
+        });
+    }
+
+    // Attempt to get a list of questions from the list loader.
+    // If the attempt fails, the active list remains unchanged.
+    this.loadList = function (listName) {
+        var ll = ListLoader.getSingleton();
+        var that = this;
+        ll.load(listName, false, function() {
+            var list = this.list = ll.get(listName);
+            if(list) {
+                that.dictList.val(listName);
+	        that.list = list;
+	        that.startup();
+            } else {
+                console.log('Exquisitioner failed to load dict ' + listName);
+            }
+        });
     };
     this.startup = function (){
 	this.getQuestion();
@@ -26,7 +72,6 @@ function Exquisitioner(list){
     };
 
     this.setAnsField = function(field) {
-	var that = this;
 	this.ansField = field;
 	this.ansField.keypress(function (e, ui) {
 	    if(e.keyCode != 13)

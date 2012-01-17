@@ -3,28 +3,47 @@ h2#question {
     margin-bottom: 5px;
     margin-top: 5px;
 }
+
+#menu {
+    margin: 0px;
+    position: relative;
+    clear: both
+    width: 100%;
+    color: #fff;
+    background-color: #777;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+
+}
+
+#menu h1 {
+    color: #fff;
+    margin: 0 5px 0 10px;
+}
+
 body {
+    background-color: #ccc;
     margin: 0px;
     padding: 0px;
 }
 
-#main, #settings, #log {
-    border: 1px dashed #000;
+#hint {
+    margin: 10px 0 0 0;
 }
 
+/* #main, #settings, #log {border: 1px dashed #777;}
+*/ 
+
 #main {
+    padding: 0 5px 0 5px;
     position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    width: 600px;
+    float: left;
+    width: 282px;
     margin-top: 0px;
     text-align: center;
-}
-#settings {
-    position: fixed; 
-    width: 200px;
-    right: 0px;
-    top: 0px;
+    border-right: 2px dotted #777;
+    background-color: #eee;
+    height: 480px;
 }
 
 #dictionaries, #dictionaries ul {
@@ -33,22 +52,38 @@ body {
     padding-left: 10px;
 }
 
+#masterWrapper {
+    width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    height: 480px;
+}
+
 #log {
     margin: 0px;
     font-size: 11px;
-    width: 200px;
+    width: 184px;
+    float: left;
     padding-left: 2px;
-    position: fixed;
-    left: 0px;
-    top: 0px;
+    position: relative;
+    float: left;
     height: 100%;
-    text-align: left;
+    text-align: center;
+    background-color: #ddd;
 }
 
+#log ul li {
+    margin-left: 0px;
+}
 #log ul {
+    padding: 0px;
     list-style-type: none;
     font-size: 16px;
 }
+
 .correct {color: #0a0;}
 .wrong {color: #f00;}
 .correctAfterFirstGuess {color: #aa0;}

@@ -10,6 +10,9 @@ function __autoload($c) {
 
 $do = isset($_GET['do']) ? $_GET['do'] : "";
 switch($do) {
+/* getDicts
+   Returns an array of the names of all available dictionaries.
+*/
 case 'getDicts':
   $result = array();
   $dh = opendir(DICT_DIR);
@@ -17,20 +20,7 @@ case 'getDicts':
     if(substr($file, 0, 1) == "." || is_dir(DICT_DIR.$file))
       continue;
     $cat = "Uncategorised";
-    $result[$file] = array();
-
-    $fh = file(DICT_DIR.$file);
-    while($row = array_shift($fh)) {
-      if(preg_match("/#(.*)/", $row, $matches) > 0)
-	$cat = trim($matches[1]);
-      else if(preg_match("/([^:]*)\:([^:\n]*)/", $row, $matches) > 0){
-	if(!isset($result[$file][$cat]))
-	  $result[$file][$cat] = array();
-	$result[$file][$cat][] = array("f" => $matches[2], "n" => $matches[1]);
-      }
-    }
-    
-    
+    $result[] = preg_replace('/^([a-zA-Z0-9\-_]+).*$/', '$1', $file);
   }
   echo json_encode($result);
   break;    

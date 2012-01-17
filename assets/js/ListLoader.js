@@ -28,7 +28,10 @@ function ListLoader() {
                 
 	        for(d in data) {
 		    var t = data[d].split(":");
-		    list.push({"q": t[1], "a": t[0]});
+		    if(t.length == 2)
+			list.push({"q": t[1], "a": t[0]});
+		    else
+			continue;
 	        }
                 
 	        lists[filteredName] = list;

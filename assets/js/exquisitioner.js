@@ -1,3 +1,4 @@
+
 function Exquisitioner(list){
     this.tries = 3;
     
@@ -9,6 +10,21 @@ function Exquisitioner(list){
     this.ansField;
     this.dictList = $("#dictList");
 
+    this.shuffle = function(){
+	var newList = [];
+	
+	while(this.list.length > 0)
+	    newList.push(this.list.splice(
+		Math.floor(Math.random() * this.list.length),
+		1
+	    )[0]);
+
+	
+	this.list = newList;
+    }
+
+
+    // this will cause problem if we need Exquisitioner in a later state than when constructed
     var that = this;
 
     // On dictionary list change, change the current dictionary.
@@ -20,12 +36,12 @@ function Exquisitioner(list){
     this.init = function(defaultList) {
         // Refresh the dict list
         $.ajax({
+	    dataType:"json",
             url: 'api.php?do=getDicts',
             error: function(a, b) {
                 console.log(a, b);
             },
-            success: function(res) {
-                var lists = $.parseJSON(res);
+            success: function(lists) {
                 that.dictList.empty();
                 for(var i in lists) {
                     var v = lists[i];
@@ -59,11 +75,37 @@ function Exquisitioner(list){
         });
     };
     this.startup = function (){
+	console.log(this.list);
+	
+	this.totalCount = 0;
+	this.correctCount = 0;
+	this.currentQIndex = undefined;
+	this.triesLeft = 0;
+	$("#log ul").empty();
+	$("#question").removeClass("wrong");
+	this.shuffle();
+	this.newGameStart = true;
 	this.getQuestion();
     };
+    
+    this.endGame = function (){
+	alert("You've done EVERY OBJECT! You should be proud. \nI'm resetting myself now!");
+	this.startup();
+    };
+
+
     this.getQuestion = function () {
+	if(this.newGameStart){
+	    this.newGameStart = false;
+	    this.currentQIndex = 0;
+	} else
+	    this.currentQIndex++;
+	
+	if(this.currentQIndex >= this.list.length){
+	    return this.endGame();
+	}
 	this.triesLeft = this.tries;
-	this.currentQIndex = Math.floor(Math.random()*this.list.length);
+
 	
 	$("#hint").html("&nbsp;");
 	$("#answer").val("");
@@ -73,6 +115,8 @@ function Exquisitioner(list){
 
     this.setAnsField = function(field) {
 	this.ansField = field;
+	var that = this;
+	this.ansField.focus();
 	this.ansField.keypress(function (e, ui) {
 	    if(e.keyCode != 13)
 		return;
@@ -98,7 +142,9 @@ function Exquisitioner(list){
 	    if(this.triesLeft > 0)
 		this.correctCount++;
 	    this.writeStatus();
+
 	    return true;
+   
 	}
 	else if(this.triesLeft > 0){
 	    this.triesLeft--;
@@ -114,6 +160,7 @@ function Exquisitioner(list){
     };
 
     this.logGuess = function (){
+
  	if($("#log ul").length == 0)
 	    $("#log").append("<ul></ul>");
 	var log = $("#log ul");

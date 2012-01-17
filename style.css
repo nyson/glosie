@@ -92,5 +92,11 @@ body {
     font-style: normal;
 }
 
-
-
+#dictList {
+    position: absolute;
+    top: 0em;
+    right: 0em;
+    float: right;
+    margin-top: 0.75em;
+    margin-right: 1em;
+}

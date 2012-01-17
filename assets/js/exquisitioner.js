@@ -7,6 +7,31 @@ function Exquisitioner(list){
     this.currentQIndex = undefined;
     this.list = {};
     this.ansField;
+    this.dictList = $("#dictList");
+
+    var that = this;
+    this.dictList.change(function() {
+        that.loadList(that.dictList[0].value);
+    });
+
+    // Refresh the list of dictionaries the user can choose from
+    this.refreshLists = function() {
+        $.ajax({
+            url: 'api.php?do=getDicts',
+            error: function(a, b) {
+                console.log(a, b);
+            },
+            success: function(res) {
+                var lists = $.parseJSON(res);
+                that.dictList.empty();
+                for(var i in lists) {
+                    var v = lists[i];
+                    var elem = $('<option value="'+v+'">'+v+'</option>');
+                    that.dictList.append(elem);
+                }
+            }
+        });
+    }
 
     // Attempt to get a list of questions from the list loader.
     // If the attempt fails, the active list remains unchanged.

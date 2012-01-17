@@ -42,7 +42,7 @@ function loadList() {
 
     this.loadCheckedLists = function (){
 	var lists = $("input.loadableList:checked").each(function (){
-	    console.debug($(this).val());
+	    console.debug($(this).vala0());
 	});
     }
 

@@ -10,12 +10,15 @@ function Exquisitioner(list){
     this.dictList = $("#dictList");
 
     var that = this;
+
+    // On dictionary list change, change the current dictionary.
     this.dictList.change(function() {
         that.loadList(that.dictList[0].value);
     });
 
-    // Refresh the list of dictionaries the user can choose from
-    this.refreshLists = function() {
+    // Initialize the list, setting
+    this.init = function(defaultList) {
+        // Refresh the dict list
         $.ajax({
             url: 'api.php?do=getDicts',
             error: function(a, b) {
@@ -29,6 +32,12 @@ function Exquisitioner(list){
                     var elem = $('<option value="'+v+'">'+v+'</option>');
                     that.dictList.append(elem);
                 }
+
+                // Load the default dictionary
+                var ll = ListLoader.getSingleton();
+                ll.load(defaultList, false, function() {
+                    that.loadList(defaultList);
+                });
             }
         });
     }
@@ -41,6 +50,7 @@ function Exquisitioner(list){
         ll.load(listName, false, function() {
             var list = this.list = ll.get(listName);
             if(list) {
+                that.dictList.val(listName);
 	        that.list = list;
 	        that.startup();
             } else {

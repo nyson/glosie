@@ -1,6 +1,5 @@
 $(document).ready(function (){
     var quiz = new Exquisitioner();
-    quiz.loadList('hiragana');
-    quiz.refreshLists();
+    quiz.init('hiragana');
     quiz.setAnsField($("#answer"));
 });

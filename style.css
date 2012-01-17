@@ -51,6 +51,7 @@ body {
 }
 .correct {color: #0a0;}
 .wrong {color: #f00;}
+.correctAfterFirstGuess {color: #aa0;}
 
 #statistics var {
     font-style: normal;

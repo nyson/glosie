@@ -188,7 +188,7 @@ function Exquisitioner(list){
 
     this.writeStatus = function(){
 	var stat = $("p#statistics")
-	var perc = Math.round(100*(this.score / this.totalCount))/100;
+	var perc = Math.round(10000*(this.score / this.totalCount))/100;
 
 	if(this.totalCount < 5)
 	    var comment = "You should probably answer "

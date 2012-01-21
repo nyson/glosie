@@ -1,5 +1,6 @@
 
 function Exquisitioner(list){
+    // amount of avaliable tries
     this.tries = 3;
     
     this.totalCount = 0;
@@ -75,12 +76,13 @@ function Exquisitioner(list){
         });
     };
     this.startup = function (){
-	console.log(this.list);
-	
+
+	this.score = 0;
 	this.totalCount = 0;
 	this.correctCount = 0;
 	this.currentQIndex = undefined;
 	this.triesLeft = 0;
+	this.writeStatus();
 	$("#log ul").empty();
 	$("#question").removeClass("wrong");
 	this.shuffle();
@@ -89,7 +91,9 @@ function Exquisitioner(list){
     };
     
     this.endGame = function (){
-	alert("You've done EVERY OBJECT! You should be proud. \nI'm resetting myself now!");
+	var perc = Math.round(10000*(this.score / this.totalCount))/100;
+	alert("You've done EVERY OBJECT! You should be proud.\n"
+	      + "You have a total score of "+this.score+"/"+this.list.length+" ("+perc+"%)\nI'm resetting myself now!");
 	this.startup();
     };
 
@@ -123,7 +127,8 @@ function Exquisitioner(list){
 	    
 	    if(that.answer()){
 		$("#question").removeClass("wrong");
-		that.logGuess();
+		if(this.triesLeft != this.tries)
+		    that.logGuess();
 		that.getQuestion();
 	    }
 	    else {
@@ -139,12 +144,19 @@ function Exquisitioner(list){
 	
 	if(ans.val().trim() == this.list[this.currentQIndex].a) {	    
 	    this.totalCount++;
-	    if(this.triesLeft > 0)
+	    if(this.triesLeft != this.tries)
+		this.logGuess();
+	    if(this.triesLeft > 0){
 		this.correctCount++;
+		this.score += this.tries == this.triesLeft 
+		    ? 1
+		    : Math.round(this.triesLeft/this.tries/0.02)/100;
+	    }
+	
 	    this.writeStatus();
 
 	    return true;
-   
+	    
 	}
 	else if(this.triesLeft > 0){
 	    this.triesLeft--;
@@ -175,8 +187,8 @@ function Exquisitioner(list){
     };
 
     this.writeStatus = function(){
-	var stat = $("p#statistics");
-	var perc = Math.round((this.correctCount / this.totalCount) * 10000) / 100;
+	var stat = $("p#statistics")
+	var perc = Math.round(100*(this.score / this.totalCount))/100;
 
 	if(this.totalCount < 5)
 	    var comment = "You should probably answer "
@@ -190,11 +202,11 @@ function Exquisitioner(list){
 	else if(perc <= 100)
 	    var comment = "You're PERFECT! You're my hero!";
 
-	stat.find(".corrects").html(this.correctCount);
-	stat.find(".totals").html(this.totalCount);
-	stat.find(".percCorrect").html(perc);
-	stat.find(".comment").html(comment);
-
+	
+	stat.html("You've done " + this.totalCount + " of " + this.list.length + "."
+		  + "Your current score is " + this.score + "<br />"
+		  + comment + "<br />"
+		  + "You seem to have some trouble with the questions below: ");
     }
 
     this.getCorrectnessClass = function (){
